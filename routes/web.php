@@ -18,4 +18,4 @@ Route::get('/', function () {
     return redirect('/books');
 });
 
-Route::resource('books', BookController::class);
+Route::resource('books', BookController::class)->except('show');
