@@ -2,29 +2,34 @@
 
 @section('content')
 
+	<div class="col-md-10 mt-5">
+		<h3> Daftar Buku</h3>
+	</div>
 	<div class="d-flex justify-content-end mb-3"><a href="{{ route('books.create') }}" class="btn btn-info">Create</a></div>
 
 	<table class="table table-bordered">
 		<thead>
 			<tr>
-				<th>id</th>
-				<th>title</th>
-				<th>category_id</th>
-				<th>year</th>
-				<th>author_id</th>
+				<th><a href="?sort=asc">Judul 
+					@if($sort == 'desc')
+						{{ '(asc)' }}
+					@endif
+				</a></th>
+				<th>Kategori</th>
+				<th>Tahun</th>
+				<th>Pengarang</th>
 
-				<th>Action</th>
+				<th>Aksi</th>
 			</tr>
 		</thead>
 		<tbody>
 			@foreach($books as $book)
 
 				<tr>
-					<td>{{ $book->id }}</td>
 					<td>{{ $book->title }}</td>
-					<td>{{ $book->category_id }}</td>
+					<td>{{ $book->category->name }}</td>
 					<td>{{ $book->year }}</td>
-					<td>{{ $book->author_id }}</td>
+					<td>{{ $book->author->name }}</td>
 
 					<td>
 						<div class="d-flex gap-2">
@@ -39,5 +44,7 @@
 			@endforeach
 		</tbody>
 	</table>
+
+	{!! $books->links() !!}
 
 @stop

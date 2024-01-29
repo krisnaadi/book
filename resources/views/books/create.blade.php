@@ -2,6 +2,10 @@
 
 @section('content')
 
+	<div class="col-md-10 mt-5">
+		<h3> Tambah Buku</h3>
+	</div>
+
 	@if($errors->any())
 		<div class="alert alert-danger">
 			@foreach ($errors->all() as $error)
@@ -13,20 +17,20 @@
 	{!! Form::open(['route' => 'books.store']) !!}
 
 		<div class="mb-3">
-			{{ Form::label('title', 'Title', ['class'=>'form-label']) }}
+			{{ Form::label('title', 'Judul', ['class'=>'form-label']) }}
 			{{ Form::text('title', null, array('class' => 'form-control')) }}
 		</div>
 		<div class="mb-3">
-			{{ Form::label('category_id', 'Category_id', ['class'=>'form-label']) }}
-			{{ Form::text('category_id', null, array('class' => 'form-control')) }}
+			{{ Form::label('category_id', 'Kategori', ['class'=>'form-label']) }}
+			{{ Form::select('category_id', $categories, null, ['placeholder' => 'Pilih kategori', 'class' => 'form-select']) }}
 		</div>
 		<div class="mb-3">
-			{{ Form::label('year', 'Year', ['class'=>'form-label']) }}
-			{{ Form::text('year', null, array('class' => 'form-control')) }}
+			{{ Form::label('year', 'Tahun', ['class'=>'form-label']) }}
+			{{ Form::selectRange('year', date('Y'), 1950, date('Y'), ['class' => 'form-select']) }}
 		</div>
 		<div class="mb-3">
-			{{ Form::label('author_id', 'Author_id', ['class'=>'form-label']) }}
-			{{ Form::text('author_id', null, array('class' => 'form-control')) }}
+			{{ Form::label('author_id', 'Pengarang', ['class'=>'form-label']) }}
+			{{ Form::select('author_id', $authors, null, ['placeholder' => 'Pilih pengarang', 'class' => 'form-select']) }}
 		</div>
 
 
