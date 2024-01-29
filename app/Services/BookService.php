@@ -6,9 +6,9 @@ use App\Models\Book;
 
 class BookService
 {
-    public function get(string $title = null, string $sort = 'asc', int $limit = 10) : array 
+    public function get(string $title = null, string $sort = 'asc', int $limit = 10) : object 
     {
-        $books = Book::orderBy('title', $sort);
+        $books = Book::with('author', 'category')->orderBy('title', $sort);
 
         if ($title != null) {
             $books = $books->where('title', 'like', '%' + $title + '%');
@@ -17,12 +17,12 @@ class BookService
         return $books->paginate($limit);
     }
 
-    public function save(array $book) : array 
+    public function save(array $book, int $id = 0) : object 
     {
-        return Book::createOrUpdate($book);
+        return Book::updateOrCreate(['id' => $id], $book);
     }
 
-    public function getById(int $id) : array
+    public function getById(int $id) : object
     {
         return Book::findOrFail($id);
     }
