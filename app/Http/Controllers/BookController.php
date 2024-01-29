@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BookRequest;
 use App\Models\Book;
+use App\Services\AuthorService;
+use App\Services\BookService;
+use App\Services\CategoryService;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -13,10 +16,10 @@ class BookController extends Controller
      *
      * @return \Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(Request $request, BookService $service)
     {
-        $books= Book::all();
-        return view('books.index', ['books'=>$books]);
+        $books = $service->get(sort: $request->sort ?? 'asc');
+        return view('books.index', ['books' => $books, 'sort' => $request->sort ?? 'asc']);
     }
 
     /**
@@ -24,9 +27,12 @@ class BookController extends Controller
      *
      * @return \Illuminate\Contracts\View\View
      */
-    public function create()
+    public function create(AuthorService $authorService, CategoryService $categoryService)
     {
-        return view('books.create');
+        return view('books.create', [
+            'authors' => $authorService->get()->pluck('name', 'id'), 
+            'categories' => $categoryService->get()->pluck('name', 'id')
+        ]);
     }
 
     /**
@@ -35,28 +41,11 @@ class BookController extends Controller
      * @param  BookRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(BookRequest $request)
+    public function store(BookRequest $request, BookService $service)
     {
-        $book = new Book;
-		$book->title = $request->input('title');
-		$book->category_id = $request->input('category_id');
-		$book->year = $request->input('year');
-		$book->author_id = $request->input('author_id');
-        $book->save();
+        $service->save($request->validated());
 
         return to_route('books.index');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Contracts\View\View
-     */
-    public function show($id)
-    {
-        $book = Book::findOrFail($id);
-        return view('books.show',['book'=>$book]);
     }
 
     /**
@@ -65,10 +54,15 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Contracts\View\View
      */
-    public function edit($id)
+    public function edit($id, BookService $bookService, AuthorService $authorService, CategoryService $categoryService)
     {
-        $book = Book::findOrFail($id);
-        return view('books.edit',['book'=>$book]);
+        $book = $bookService->getById($id);
+
+        return view('books.edit',[
+            'book' => $book, 
+            'authors' => $authorService->get()->pluck('name', 'id'), 
+            'categories' => $categoryService->get()->pluck('name', 'id')
+        ]);
     }
 
     /**
@@ -78,14 +72,9 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(BookRequest $request, $id)
+    public function update(BookRequest $request, $id, BookService $service)
     {
-        $book = Book::findOrFail($id);
-		$book->title = $request->input('title');
-		$book->category_id = $request->input('category_id');
-		$book->year = $request->input('year');
-		$book->author_id = $request->input('author_id');
-        $book->save();
+        $service->save($request->validated(), $id);
 
         return to_route('books.index');
     }
@@ -96,10 +85,9 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy($id)
+    public function destroy($id, BookService $service)
     {
-        $book = Book::findOrFail($id);
-        $book->delete();
+        $service->delete($id);
 
         return to_route('books.index');
     }

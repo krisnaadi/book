@@ -10,11 +10,14 @@
 	<table class="table table-bordered">
 		<thead>
 			<tr>
-				<th><a href="?sort=asc">Judul 
+				<th>
+					Judul 
 					@if($sort == 'desc')
-						{{ '(asc)' }}
+						<a href="?sort=asc"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8z"/></svg></a>
+					@else
+						<a href="?sort=desc"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="m4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8z"/></svg></a>
 					@endif
-				</a></th>
+				</th>
 				<th>Kategori</th>
 				<th>Tahun</th>
 				<th>Pengarang</th>
@@ -45,6 +48,6 @@
 		</tbody>
 	</table>
 
-	{!! $books->links() !!}
+	{!! $books->withQueryString()->links() !!}
 
 @stop
